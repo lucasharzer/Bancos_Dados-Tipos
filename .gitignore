@@ -1,0 +1,11 @@
+# Variáveis de ambiente
+.env
+
+# Pacotes do NodeJS
+node_modules
+
+# Detalhes da configuração do NodeJS
+package-lock.json
+
+# Pasta cache do Python
+__pycache__
