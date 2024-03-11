@@ -8,9 +8,17 @@ Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e
 - pymongo: Biblioteca do Python para conexão com MongoDB.
 
 # Comandos
+- NodeJS | Instalar dependências:
+```bash
+npm install
+```
 - NodeJS | Executar testes:
 ```bash
 npm start
+```
+- Python | Instalar dependências:
+```bash
+pip install -r requirements.txt
 ```
 - Python | Executar testes:
 ```bash
