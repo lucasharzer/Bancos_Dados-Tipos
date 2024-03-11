@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-- Docker | Executar contêiner do MongoDB:
+- Docker | Executar contêiner do PostgreSQL:
 ```bash
-docker run -d -p 27017:27017 --name <nome do contêiner> mongo
+docker run --name <nome do contêiner> -e POSTGRES_PASSWORD=<senha do banco> -p 5432:5432 -d postgres
 ```
 Listar imagens:
 ```bash
