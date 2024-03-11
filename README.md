@@ -1,16 +1,24 @@
-# Banco de dados NoSQL - MongoDB
-Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e deletar) no banco de dados MongoDB em execução no Docker usando NodeJS e Python.
+# Banco de dados NoSQL - PostgreSQL
+Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e deletar) no banco de dados PostgreSQL em execução no Docker usando NodeJS e Python.
 
 # Pacotes
 - dotenv: Biblioteca do NodeJS para acessar variáveis de ambiente no .env;
-- mongodb: Biblioteca do NodeJS para conexão com MongoDB;
+- pg: Biblioteca do NodeJS para conexão com PostgreSQL;
 - python-dotenv: Biblioteca do Python para acessar variáveis de ambiente no .env;
-- pymongo: Biblioteca do Python para conexão com MongoDB.
+- psycopg2-binary: Biblioteca do Python para conexão com PostgreSQL.
 
 # Comandos
+- NodeJS | Instalar dependências:
+```bash
+npm install
+```
 - NodeJS | Executar testes:
 ```bash
 npm start
+```
+- Python | Instalar dependências:
+```bash
+pip install -r requirements.txt
 ```
 - Python | Executar testes:
 ```bash
@@ -32,15 +40,15 @@ docker ps
 # Resultados
 - NodeJS
 <span>
-    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/c3e77bed-865c-4576-b144-59da6a659e0d">
+    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/f00e0af0-4ce0-497f-bb45-f3ea33acd229">
 </span>
 
 - Python
 <span>
-    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/c41e33b9-7adf-4c08-a3ea-da2f19cd20c9">
+    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/2950b5ce-eb00-4d3e-a750-85bb940a87b6">
 </span>
 
 - Docker
 <span>
-    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/714e145e-2d52-40a9-8c44-51a02a2f8cce">
+    <img src="https://github.com/lucasharzer/Docker_Testes/assets/85804895/e5819773-b22d-4324-9f8e-98eced35456e">
 </span>
