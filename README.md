@@ -5,7 +5,7 @@ Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e
 - dotenv: Biblioteca do NodeJS para acessar variáveis de ambiente no .env;
 - mongodb: Biblioteca do NodeJS para conexão com MongoDB;
 - python-dotenv: Biblioteca do Python para acessar variáveis de ambiente no .env;
-- pymongo: Biblioteca do Python para conexão com MongoDB;
+- pymongo: Biblioteca do Python para conexão com MongoDB.
 
 # Comandos
 - NodeJS
