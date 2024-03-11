@@ -8,18 +8,15 @@ Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e
 - pymongo: Biblioteca do Python para conexão com MongoDB.
 
 # Comandos
-- NodeJS
-Executar testes:
+- NodeJS | Executar testes:
 ```bash
 npm start
 ```
-- Python
-Executar testes:
+- Python | Executar testes:
 ```bash
 python main.py
 ```
-- Docker
-Executar contêiner do MongoDB:
+- Docker | Executar contêiner do MongoDB:
 ```bash
 docker run -d -p 27017:27017 --name <nome do contêiner> mongo
 ```
