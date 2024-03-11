@@ -1,34 +1,37 @@
-const MongoDB = require("./database")
+const PostgreSQL = require("./database");
 
 
 async function main() {
-    const mongo = new MongoDB();
-    await mongo.connect();
-    await mongo.getCollection();
+    const postgre = new PostgreSQL();
+
+    // Conectar ao banco
+    await postgre.connect();
+    await postgre.get_table();
+
+    // Criar tabela
+    await postgre.createTable();
 
     // Inserir item
-    const insertedId = await mongo.insertOne({
-        Nome: "Peter Griffin", Telefone: "5511309682976", 
-        Status: 1, Data: "2024-03-09 21:10:00"
-    });
-    console.log("Item inserido: ", insertedId);
+    await postgre.insertItem(
+        "Peter Griffin", "5511309682976", 0, "2024-03-10 15:02:00"
+    );
 
     // Atualizar item
-    const updateResult = await mongo.updateOne({ Nome: "Peter Griffin" }, { Status: 0, Data: "2024-03-09 22:05:00" });
-    console.log("Número de documentos modificados:", updateResult);
+    await postgre.updateItem(
+        1, "2024-03-10 15:07:00", "5511309682976"
+    );
 
     // Deletar item
-    const deleteResult = await mongo.deleteOne({ Nome: "Peter Griffin" });
-    console.log("Número de documentos deletados: ", deleteResult);
+    await postgre.deleteItem("5511309682976");
 
     // Selecionar todos os itens
-    await mongo.findAll();
+    await postgre.selectAll()
 
     // Selecionar itens com filtro
-    await mongo.findWithFilter({ Status: 1 });
+    await postgre.selectWithFilter(0, "5511309682976");
 
     // Fechar conexão
-    await mongo.close();
+    await postgre.closeConnection();
 }
 
-main()
+main();

@@ -1,92 +1,114 @@
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
+const { Client } = require("pg");
 
 
-class MongoDB {
+class PostgreSQL {
     constructor() {
-        this.uri = `${process.env.URI}:${process.env.PORT.toString()}`;
-        this.client = new MongoClient(
-            this.uri, { useNewUrlParser: true, useUnifiedTopology: true 
+        this.client = new Client({
+            user: process.env.USER,
+            password: process.env.PASSWORD,
+            host: process.env.HOST,
+            port: process.env.PORT,
+            database: process.env.DATABASE
         });
     }
 
     async connect() {
         try {
             await this.client.connect();
-            console.log("Conectado ao MongoDB");
+            console.log("Conectado ao banco");
         } catch (error) {
-            console.error("Erro ao conectar ao MongoDB:", error);
+            console.error("Erro ao conectar ao banco:", error);
         }
     }
 
-    async getCollection() {
-        const database = this.client.db(process.env.DB);
-        this.collection = database.collection(process.env.COLLECTION);
+    async get_table() {
+        this.tabela = process.env.TABLE;
     }
 
-    async insertOne(document) {
+    async createTable() {
         try {
-            const result = await this.collection.insertOne(document);
-            return result.insertedId;
+            await this.client.query(`
+                CREATE TABLE IF NOT EXISTS ${this.tabela}
+                (
+                    Nome VARCHAR(100),
+                    Telefone VARCHAR(50) NOT NULL,
+                    Status INT NOT NULL,
+                    Data TIMESTAMP
+                )
+            `);
+            console.log(`Tabela '${this.tabela}' criada`);
         } catch (error) {
-            console.error("Erro ao inserir documento: ", error);
+            console.error("Erro ao criar tabela:", error);
         }
     }
 
-    async deleteOne(filter) {
+    async insertItem(nome, telefone, status, data) {
         try {
-            const result = await this.collection.deleteOne(filter);
-            return result.deletedCount;
+            await this.client.query(
+                `INSERT INTO ${this.tabela} (Nome, Telefone, Status, Data)
+                VALUES ($1, $2, $3, $4)`,
+                [nome, telefone, status, data]
+            );
+            console.log("Item inserido");
         } catch (error) {
-            console.error("Erro ao deletar documento:", error);
+            console.error("Erro ao inserir item:", error);
         }
     }
 
-    async updateOne(filter, update) {
+    async updateItem(status, data, telefone) {
         try {
-            const result = await this.collection.updateOne(filter, { $set: update });
-            return result.modifiedCount;
+            await this.client.query(
+                `UPDATE ${this.tabela} SET Status = $1, Data = $2 WHERE Telefone = $3`,
+                [status, data, telefone]
+            );
+            console.log("Item atualizado");
         } catch (error) {
-            console.error("Erro ao atualizar documento:", error);
+            console.error("Erro ao atualizar item:", error);
         }
     }
 
-    async findAll() {
+    async deleteItem(telefone) {
         try {
-            const cursor = await this.collection.find();
-            const result = await cursor.toArray();
-            if (result.length != 0) {
-                console.log("Todos os documentos:");
-                result.forEach(doc => console.log(doc));
-            }else {
-                console.log("Nenhum documento");
-            }
-            return result;
+            await this.client.query(
+                `DELETE FROM ${this.tabela} WHERE Telefone = $1`,
+                [telefone]
+            );
+            console.log("Item deletado");
         } catch (error) {
-            console.error("Erro ao buscar todos os documentos:", error);
+            console.error("Erro ao deletar item:", error);
         }
     }
 
-    async findWithFilter(filter) {
+    async selectAll() {
         try {
-            const cursor = await this.collection.find(filter);
-            const result = await cursor.toArray();
-            if (result.length != 0) {
-                console.log("Documentos com filtro:");
-                result.forEach(doc => console.log(doc));
-            }else {
-                console.log("Nenhum documento");
-            }
-            return result;
+            const result = await this.client.query(`SELECT * FROM ${this.tabela}`);
+            console.log("Todos os registros encontrados: ", result.rows);
+            return result.rows;
         } catch (error) {
-            console.error("Erro ao buscar documentos com filtro:", error);
+            console.error("Erro ao selecionar todos os itens:", error);
+            return [];
         }
     }
 
-    async close() {
+    async selectWithFilter(status, telefone) {
         try {
-            await this.client.close();
-            console.log("Conexão fechada com o MongoDB");
+            const result = await this.client.query(
+                `SELECT * FROM ${this.tabela} WHERE Status = $1 AND Telefone = $2`,
+                [status, telefone]
+            );
+            console.log("Registros encontrados com filtro: ", result.rows);
+            return result.rows;
+        } catch (error) {
+            console.error("Erro ao selecionar itens com filtro:", error);
+            return [];
+        }
+    }
+
+    async closeConnection() {
+        try {
+            await this.client.end();
+            console.log("Conexão fechada");
         } catch (error) {
             console.error("Erro ao fechar conexão:", error);
         }
@@ -94,4 +116,4 @@ class MongoDB {
 }
 
 
-module.exports = MongoDB;
+module.exports = PostgreSQL;
