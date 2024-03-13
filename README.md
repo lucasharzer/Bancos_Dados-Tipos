@@ -1,4 +1,4 @@
-# Banco de dados NoSQL - PostgreSQL
+# Banco de dados SQL - PostgreSQL
 Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e deletar) no banco de dados PostgreSQL em execução no Docker usando NodeJS e Python.
 
 # Pacotes
