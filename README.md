@@ -1,4 +1,7 @@
 # Banco de dados NoSQL - MongoDB
+
+Banco de dados não relacional do tipo documento;
+
 Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e deletar) no banco de dados MongoDB em execução no Docker usando NodeJS e Python.
 
 # Pacotes
@@ -28,11 +31,11 @@ python main.py
 ```bash
 docker run -d -p 27017:27017 --name <nome do contêiner> mongo
 ```
-Listar imagens:
+- Docker | Listar imagens:
 ```bash
 docker image ls
 ```
-Listar contêineres:
+- Docker | Listar contêineres:
 ```bash
 docker ps
 ```
