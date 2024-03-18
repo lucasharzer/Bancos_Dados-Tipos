@@ -1,37 +1,34 @@
-const PostgreSQL = require("./database");
+const RedisDB = require("./database");
 
+
+const db = new RedisDB();
 
 async function main() {
-    const postgre = new PostgreSQL();
-
-    // Conectar ao banco
-    await postgre.connect();
-    await postgre.get_table();
-
-    // Criar tabela
-    await postgre.createTable();
-
-    // Inserir item
-    await postgre.insertItem(
-        "Peter Griffin", "5511309682976", 0, "2024-03-10 15:02:00"
-    );
-
-    // Atualizar item
-    await postgre.updateItem(
-        1, "2024-03-10 15:07:00", "5511309682976"
-    );
-
-    // Deletar item
-    await postgre.deleteItem("5511309682976");
-
-    // Selecionar todos os itens
-    await postgre.selectAll()
-
-    // Selecionar itens com filtro
-    await postgre.selectWithFilter(0, "5511309682976");
-
-    // Fechar conexão
-    await postgre.closeConnection();
+    try {
+        // Iniciar conexão ao banco
+        await db.connect();
+        // Inserir item
+        await db.insertItem("Nome", "Peter Griffin");
+        await db.insertItem("Telefone", "5511309682976");
+        await db.insertItem("Status", 1);
+        await db.insertItem("Idade", 26);
+        // Atualizar item
+        await db.updateItem("Status", 0);
+        await db.updateItem("Idade", 27);
+        // Deletar item
+        await db.deleteItem("Status");
+        // Selecionar item
+        await db.selectItem("Nome");
+        await db.selectItem("Telefone");
+        await db.selectItem("Status");
+        await db.selectItem("Idade");
+        await db.selectItem("Endereço");
+        await db.selectAllKeys();
+    }catch(error) {
+        console.error(error);
+    }finally {
+        await db.closeConnection()
+    }
 }
 
 main();

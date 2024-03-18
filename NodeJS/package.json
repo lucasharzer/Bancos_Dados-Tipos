@@ -1,17 +1,17 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
-  "description": "",
+  "description": "Conexão no Redis",
   "main": "index.js",
   "scripts": {
-    "start": "node NodeJS/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node NodeJS/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "lucasharzer",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "pg": "^8.11.3"
+    "redis": "^4.6.13"
   }
 }

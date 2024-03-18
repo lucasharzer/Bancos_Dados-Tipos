@@ -1,31 +1,24 @@
-from database import PostgresSQL
+from database import RedisDB
 
 
-# Conectar ao banco
-postgre = PostgresSQL()
-postgre.get_cursor()
-
-# Criar tabela
-postgre.create_table()
-
+# Coneão com o banco de dados
+db = RedisDB()
 # Inserir item
-postgre.insert_item(
-    "Peter Griffin", "5511309682976", 1, "2024-03-10 16:15:00"
-)
-
+db.insert_item("Nome", "Peter Griffin")
+db.insert_item("Telefone", "5511309682976")
+db.insert_item("Status", 1)
+db.insert_item("Idade", 26)
 # Atualizar item
-postgre.update_item(
-    0, "2024-03-10 16:17:00", "5511309682976"
-)
-
+db.update_item("Status", 0)
+db.insert_item("Idade", 27)
 # Deletar item
-postgre.delete_item("5511309682976")
-
-# Selecionar tudo
-postgre.select_all()
-
-# Selecionar com filtro
-postgre.select_with_filter("5511309682976")
-
+db.delete_item("Status")
+# Selecionar itens
+db.select_item("Nome")
+db.select_item("Telefone")
+db.select_item("Endereço")
+db.select_item("Status")
+db.select_item("Idade")
+db.select_all_items()
 # Fechar conexão
-postgre.close_connection()
+db.close_connection()
