@@ -1,4 +1,7 @@
 # Banco de dados SQL - PostgreSQL
+
+Banco de dados relacional;
+
 Fazendo conexão e executando queries básicas (Inserir, Selecionar, atualizar e deletar) no banco de dados PostgreSQL em execução no Docker usando NodeJS e Python.
 
 # Pacotes
@@ -28,11 +31,11 @@ python main.py
 ```bash
 docker run --name <nome do contêiner> -e POSTGRES_PASSWORD=<senha do banco> -p 5432:5432 -d postgres
 ```
-Listar imagens:
+- Docker | Listar imagens:
 ```bash
 docker image ls
 ```
-Listar contêineres:
+- Docker | Listar contêineres:
 ```bash
 docker ps
 ```
