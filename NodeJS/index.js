@@ -1,34 +1,41 @@
-const MongoDB = require("./database")
+const CassandraDB = require("./database");
 
+
+const db = new CassandraDB();
 
 async function main() {
-    const mongo = new MongoDB();
-    await mongo.connect();
-    await mongo.getCollection();
-
-    // Inserir item
-    const insertedId = await mongo.insertOne({
-        Nome: "Peter Griffin", Telefone: "5511309682976", 
-        Status: 1, Data: "2024-03-09 21:10:00"
-    });
-    console.log("Item inserido: ", insertedId);
-
-    // Atualizar item
-    const updateResult = await mongo.updateOne({ Nome: "Peter Griffin" }, { Status: 0, Data: "2024-03-09 22:05:00" });
-    console.log("Número de documentos modificados:", updateResult);
-
-    // Deletar item
-    const deleteResult = await mongo.deleteOne({ Nome: "Peter Griffin" });
-    console.log("Número de documentos deletados: ", deleteResult);
-
-    // Selecionar todos os itens
-    await mongo.findAll();
-
-    // Selecionar itens com filtro
-    await mongo.findWithFilter({ Status: 1 });
-
-    // Fechar conexão
-    await mongo.close();
+    try {
+        // Conectar ao banco de dados
+        await db.connect();
+        // Criar keyspace
+        await db.createKeyspace();
+        // Criar tabela
+        await db.createTable();
+        // Inserir item
+        await db.insertItem(
+            "Peter Griffin", "5511309682976", 1, "2024-03-23 00:44:23"
+        )
+        await db.insertItem(
+            "David Johnson", "5511285603478", 0, "2024-03-23 00:48:56"
+        )
+        await db.insertItem(
+            "Janete Wille", "5511960386532", 1, "2024-03-23 00:51:04"
+        )
+        // Atualizar item
+        await db.updateItem(0, "2024-03-23 13:00:35", "5511960386532");
+        // Deletar item
+        await db.deleteItem("5511285603478");
+        // Selecionar todos registros
+        await db.selectAllItems();
+        // Selecionar com filtro
+        await db.selectWithFilter("5511309682976");
+    }catch(err) {
+        console.error(err);
+    }finally {
+        // Fechar conexão
+        await db.closeConnection();
+    }
 }
 
-main()
+
+main();

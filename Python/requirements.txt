@@ -1,2 +1,2 @@
-pymongo
+cassandra-driver
 python-dotenv

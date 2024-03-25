@@ -1,17 +1,17 @@
 {
-  "name": "mongodb",
+  "name": "cassandra",
   "version": "1.0.0",
-  "description": "Conexão no mongoDB",
+  "description": "Conexão no Cassandra",
   "main": "index.js",
   "scripts": {
-    "start": "node NodeJS/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node NodeJS/index.js"
   },
   "keywords": [],
   "author": "lucasharzer",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "mongodb": "^6.4.0"
+    "cassandra-driver": "^4.7.2",
+    "dotenv": "^16.4.5"
   }
 }

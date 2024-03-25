@@ -1,97 +1,142 @@
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
+const { Client } = require("cassandra-driver");
 
 
-class MongoDB {
+class CassandraDB {
     constructor() {
-        this.uri = `${process.env.URI}:${process.env.PORT.toString()}`;
-        this.client = new MongoClient(
-            this.uri, { useNewUrlParser: true, useUnifiedTopology: true 
+        const reserved_keyspace = process.env.RESERVED_KEYSPACE;
+        const data_center = process.env.DATA_CENTER;
+        const host = process.env.HOST;
+        const port = process.env.PORT;
+
+        this.keyspace = process.env.KEYSPACE;
+        this.table = process.env.TABLE;
+
+        this.client = new Client({
+            contactPoints: [`${host}:${port}`],
+            localDataCenter: data_center,
+            keyspace: reserved_keyspace
         });
     }
 
     async connect() {
         try {
             await this.client.connect();
-            console.log("Conectado ao MongoDB");
-        } catch (error) {
-            console.error("Erro ao conectar ao MongoDB:", error);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async getCollection() {
-        const database = this.client.db(process.env.DB);
-        this.collection = database.collection(process.env.COLLECTION);
-    }
-
-    async insertOne(document) {
+    async createKeyspace() {
+        const query = `
+            CREATE KEYSPACE IF NOT EXISTS ${this.keyspace}
+            WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}
+        `
         try {
-            const result = await this.collection.insertOne(document);
-            return result.insertedId;
-        } catch (error) {
-            console.error("Erro ao inserir documento: ", error);
+            await this.client.execute(query);
+            console.log(`Keyspace ${this.keyspace} criado`);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async deleteOne(filter) {
+    async createTable() {
+        const query = `
+            CREATE TABLE IF NOT EXISTS ${this.keyspace}.${this.table} (
+                Nome TEXT,
+                Telefone TEXT PRIMARY KEY,
+                Status INT,
+                Data TIMESTAMP
+            )
+        `
         try {
-            const result = await this.collection.deleteOne(filter);
-            return result.deletedCount;
-        } catch (error) {
-            console.error("Erro ao deletar documento:", error);
+            await this.client.execute(query);
+            console.log(`Tabela ${this.table} criada`);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async updateOne(filter, update) {
+    async insertItem(nome, telefone, status, data) {
+        const query = `
+            INSERT INTO ${this.keyspace}.${this.table} 
+            (Nome, Telefone, Status, Data) VALUES (?, ?, ?, ?)
+        `;
+        const params = [nome, telefone, status, data];
         try {
-            const result = await this.collection.updateOne(filter, { $set: update });
-            return result.modifiedCount;
-        } catch (error) {
-            console.error("Erro ao atualizar documento:", error);
+            await this.client.execute(query, params, { prepare: true });
+            console.log(`Item inserido com telefone ${telefone}`);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async findAll() {
+    async updateItem(status, data, telefone) {
+        const query = `
+            UPDATE ${this.keyspace}.${this.table} 
+            SET Status = ?, Data = ? WHERE Telefone = ?
+        `;
+        const params = [status, data, telefone];
         try {
-            const cursor = await this.collection.find();
-            const result = await cursor.toArray();
-            if (result.length != 0) {
-                console.log("Todos os documentos:");
-                result.forEach(doc => console.log(doc));
-            }else {
-                console.log("Nenhum documento");
-            }
-            return result;
-        } catch (error) {
-            console.error("Erro ao buscar todos os documentos:", error);
+            await this.client.execute(query, params, { prepare: true });
+            console.log(`Item atualizado com telefone: ${telefone}`);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async findWithFilter(filter) {
+    async deleteItem(telefone) {
+        const query = `
+            DELETE FROM ${this.keyspace}.${this.table} WHERE Telefone = ?
+        `;
+        const params = [telefone];
         try {
-            const cursor = await this.collection.find(filter);
-            const result = await cursor.toArray();
-            if (result.length != 0) {
-                console.log("Documentos com filtro:");
-                result.forEach(doc => console.log(doc));
-            }else {
-                console.log("Nenhum documento");
-            }
-            return result;
-        } catch (error) {
-            console.error("Erro ao buscar documentos com filtro:", error);
+            await this.client.execute(query, params, { prepare: true });
+            console.log(`Item deletado com telefone: ${telefone}`);
+        }catch(err) {
+            console.error(err);
         }
     }
 
-    async close() {
+    async selectAllItems() {
+        const query = `SELECT * FROM ${this.keyspace}.${this.table}`;
         try {
-            await this.client.close();
-            console.log("Conexão fechada com o MongoDB");
-        } catch (error) {
-            console.error("Erro ao fechar conexão:", error);
+            const resultado = await this.client.execute(query);
+            console.log("Todos os registros da tabela: ");
+            console.log(resultado.rows);
+        }catch(err) {
+            console.error(err);
         }
+    }
+
+    async selectWithFilter(telefone) {
+        const query = `
+            SELECT * FROM ${this.keyspace}.${this.table} WHERE Telefone = ?
+        `;
+        const params = [telefone];
+        try {
+            const resultado = await this.client.execute(
+                query, params, { prepare: true }
+            );
+            // console.log(resultado.rows); 
+            // resultado.rows[0].Nome, resultado.rows[0].Telefone, resultado.rows[0].Status e resultado.rows[0].Data
+            console.log(resultado.info);
+            console.log(resultado.rowLength);
+            console.log(resultado.columns);
+            resultado.rows.forEach(row => {
+                console.log(
+                    `Nome: ${row.nome} | Telefone: ${row.telefone} | Status: ${row.status} | Data: ${row.data}`
+                );
+            });
+        }catch(err) {
+            console.error(err);
+        }
+    }
+
+    async closeConnection() {
+        await this.client.shutdown();
     }
 }
 
 
-module.exports = MongoDB;
+module.exports = CassandraDB;
